@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 CASINO GAME — LEGEND STORY</title>
+    <link rel="stylesheet" href="css/casino-theme.css">
+    <style>
+        .hero-container {
+            max-width: 680px;
+            margin: 3rem auto;
+            padding: 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .portal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem 2rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .mode-selection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .mode-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 2rem 1.25rem;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .mode-box:hover {
+            border-color: var(--gold);
+            background: rgba(245, 158, 11, 0.08);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        .mode-box.student:hover {
+            border-color: var(--cyan);
+            background: rgba(6, 182, 212, 0.08);
+            box-shadow: var(--shadow-glow-cyan);
+        }
+
+        .mode-icon {
+            font-size: 3rem;
+        }
+
+        .mode-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .mode-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 600px) {
+            .mode-selection-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="casino-header">
+        <div class="brand-title">
+            <span class="brand-icon">🎰</span>
+            <div>
+                <h1>CASINO GAME ROOM</h1>
+                <span>LEGEND STORY • PHASE F</span>
+            </div>
+        </div>
+        <div>
+            <span class="badge-pill gold">Multiplayer Game Room</span>
+        </div>
+    </header>
+
+    <main class="hero-container">
+        <div class="portal-card">
+            <div style="font-size: 4rem; filter: drop-shadow(0 0 25px rgba(245,158,11,0.5));">🎰</div>
+            <div>
+                <h2 style="font-size: 2rem; font-weight: 900; background: linear-gradient(90deg, #fff, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    CASINO GAME: LEGEND STORY
+                </h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.95rem;">
+                    Real-time multiplayer classroom betting & reading comprehension arena.
+                </p>
+            </div>
+
+            <div class="mode-selection-grid">
+                <!-- Teacher Mode -->
+                <a href="teacher.html" class="mode-box">
+                    <span class="mode-icon">👨‍🏫</span>
+                    <span class="mode-name" style="color: var(--gold-light);">TEACHER MODE</span>
+                    <span class="mode-desc">Laptop & Projector display. Control rounds, betting, reveals, and calculate live scores.</span>
+                </a>
+
+                <!-- Student Mode -->
+                <a href="student.html" class="mode-box student">
+                    <span class="mode-icon">📱</span>
+                    <span class="mode-name" style="color: #a5f3fc;">STUDENT MODE</span>
+                    <span class="mode-desc">Mobile/Tablet interface. Select group, place bet chips (25–100/All-In), and lock answer.</span>
+                </a>
+            </div>
+
+            <div style="margin-top: 1rem; padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-md); border: 1px solid var(--border-glass); width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Session Room Code:</span>
+                <span class="badge-pill cyan" style="font-size: 0.95rem; font-family: monospace;">LGD-5274</span>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
