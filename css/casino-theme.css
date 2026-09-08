@@ -1,0 +1,652 @@
+﻿/* ==========================================================================
+   🎰 CASINO GAME ROOM — MODERN EDUCATIONAL CASINO THEME
+   ========================================================================== */
+:root {
+    --bg-dark: #080d1a;
+    --bg-surface: #0f172a;
+    --bg-card: rgba(18, 28, 54, 0.85);
+    --bg-card-hover: rgba(28, 44, 82, 0.95);
+    --border-glass: rgba(255, 255, 255, 0.12);
+    
+    --gold: #f59e0b;
+    --gold-light: #fde68a;
+    --gold-dark: #b45309;
+    --emerald: #10b981;
+    --emerald-dark: #047857;
+    --crimson: #ef4444;
+    --crimson-dark: #b91c1c;
+    --cyan: #06b6d4;
+    --purple: #8b5cf6;
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 30px;
+    
+    --shadow-glow-gold: 0 0 25px rgba(245, 158, 11, 0.35);
+    --shadow-glow-cyan: 0 0 25px rgba(6, 182, 212, 0.35);
+    --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    user-select: none;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 60%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   HEADER & TOP BAR
+   ========================================================================== */
+.casino-header {
+    background: rgba(11, 19, 41, 0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-glass);
+    padding: 0.85rem 1.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.brand-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6));
+}
+
+.brand-title h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #fff, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-title span {
+    font-size: 0.72rem;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: block;
+}
+
+.badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-glass);
+}
+
+.badge-pill.gold {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: var(--gold-light);
+}
+
+.badge-pill.cyan {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: rgba(6, 182, 212, 0.4);
+    color: #a5f3fc;
+}
+
+.badge-pill.emerald {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #6ee7b7;
+}
+
+.badge-pill.crimson {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+}
+
+.badge-pill.purple {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: #ddd6fe;
+}
+
+/* ==========================================================================
+   BUTTONS & CONTROLS
+   ========================================================================== */
+.btn {
+    cursor: pointer;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    border: none;
+    outline: none;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #1a0f00;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 22px rgba(245, 158, 11, 0.55);
+    transform: translateY(-2px);
+}
+
+.btn-emerald {
+    background: linear-gradient(135deg, var(--emerald), var(--emerald-dark));
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+}
+
+.btn-emerald:hover {
+    box-shadow: 0 6px 22px rgba(16, 185, 129, 0.55);
+    transform: translateY(-2px);
+}
+
+.btn-crimson {
+    background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35);
+}
+
+.btn-crimson:hover {
+    box-shadow: 0 6px 22px rgba(239, 68, 68, 0.55);
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-glass);
+    color: var(--text-secondary);
+    padding: 0.65rem 1.25rem;
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+/* ==========================================================================
+   CASINO CHIPS (BETTING UI)
+   ========================================================================== */
+.chips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 1rem;
+    width: 100%;
+}
+
+.casino-chip {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 4px dashed rgba(255, 255, 255, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.4);
+    position: relative;
+}
+
+.casino-chip::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+.casino-chip .chip-val {
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.casino-chip .chip-lbl {
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.casino-chip.chip-25 {
+    background: radial-gradient(circle, #3b82f6, #1d4ed8);
+    color: #fff;
+}
+
+.casino-chip.chip-50 {
+    background: radial-gradient(circle, #10b981, #047857);
+    color: #fff;
+}
+
+.casino-chip.chip-75 {
+    background: radial-gradient(circle, #8b5cf6, #6d28d9);
+    color: #fff;
+}
+
+.casino-chip.chip-100 {
+    background: radial-gradient(circle, #f59e0b, #b45309);
+    color: #fff;
+}
+
+.casino-chip.chip-allin {
+    background: radial-gradient(circle, #ef4444, #991b1b);
+    color: #fff;
+    animation: pulseAllIn 1.5s infinite alternate;
+}
+
+@keyframes pulseAllIn {
+    from { transform: scale(1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+    to { transform: scale(1.05); box-shadow: 0 0 30px rgba(239, 68, 68, 0.8); }
+}
+
+.casino-chip:hover:not(.disabled) {
+    transform: translateY(-4px) scale(1.06);
+}
+
+.casino-chip.selected {
+    transform: translateY(-6px) scale(1.12);
+    border-color: #fff;
+    border-style: solid;
+    box-shadow: 0 0 25px #fff, inset 0 0 15px rgba(255,255,255,0.4);
+}
+
+.casino-chip.disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    filter: grayscale(80%);
+}
+
+/* ==========================================================================
+   ANSWER SELECTION CARDS (A - E)
+   ========================================================================== */
+.answers-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.answer-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 0.5rem;
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.answer-card:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+.answer-card.selected {
+    background: linear-gradient(135deg, var(--cyan), #0284c7);
+    color: #fff;
+    border-color: #38bdf8;
+    box-shadow: var(--shadow-glow-cyan);
+    transform: translateY(-4px) scale(1.05);
+}
+
+.answer-card.disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   TEACHER SCOREBOARD TABLE
+   ========================================================================== */
+.scoreboard-table-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+}
+
+.casino-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.casino-table th {
+    background: rgba(15, 23, 42, 0.9);
+    padding: 1.1rem 1.25rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.casino-table td {
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    vertical-align: middle;
+}
+
+.casino-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.group-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.group-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-glass);
+}
+
+.capital-display {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--gold-light);
+    font-variant-numeric: tabular-nums;
+}
+
+.bet-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 1.05rem;
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--gold-light);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.answer-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.25rem;
+    background: rgba(6, 182, 212, 0.2);
+    color: #a5f3fc;
+    border: 1px solid rgba(6, 182, 212, 0.4);
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+}
+
+.status-indicator.submitted {
+    background: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.status-indicator.waiting {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--gold-light);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.status-indicator.locked {
+    background: rgba(100, 116, 139, 0.2);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-indicator.correct {
+    background: rgba(16, 185, 129, 0.25);
+    color: #10b981;
+    border: 1px solid #10b981;
+}
+
+.status-indicator.wrong {
+    background: rgba(239, 68, 68, 0.25);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+/* ==========================================================================
+   STUDENT MOBILE CARD & DASHBOARD
+   ========================================================================== */
+.student-container {
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.student-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.student-capital-banner {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(180, 83, 9, 0.2));
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.student-capital-banner h2 {
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.25rem;
+}
+
+.student-capital-banner .capital-num {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+
+.section-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ==========================================================================
+   MODALS & POPUPS
+   ========================================================================== */
+.casino-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 1rem;
+}
+
+.casino-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.casino-modal-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    max-width: 540px;
+    width: 100%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.casino-modal-overlay.active .casino-modal-card {
+    transform: scale(1);
+}
+
+/* ==========================================================================
+   LEADERBOARD PODIUM
+   ========================================================================== */
+.podium-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    align-items: flex-end;
+    margin: 1.5rem 0;
+}
+
+.podium-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 0.75rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.podium-card.rank-1 {
+    order: 2;
+    padding-bottom: 2.5rem;
+    border-color: rgba(245, 158, 11, 0.6);
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.15), var(--bg-card));
+    box-shadow: var(--shadow-glow-gold);
+}
+
+.podium-card.rank-2 {
+    order: 1;
+    padding-bottom: 1.75rem;
+    border-color: rgba(203, 213, 225, 0.4);
+}
+
+.podium-card.rank-3 {
+    order: 3;
+    padding-bottom: 1rem;
+    border-color: rgba(180, 83, 9, 0.4);
+}
+
+.podium-medal {
+    font-size: 2.2rem;
+}
+
+/* Animations */
+@keyframes coinDrop {
+    0% { transform: translateY(-50px) scale(0.5); opacity: 0; }
+    60% { transform: translateY(10px) scale(1.1); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.animated-score-up {
+    animation: scoreUp 0.8s ease-out forwards;
+    color: var(--emerald);
+}
+
+.animated-score-down {
+    animation: scoreDown 0.8s ease-out forwards;
+    color: var(--crimson);
+}
+
+@keyframes scoreUp {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.25); color: #34d399; }
+    100% { transform: scale(1); }
+}
+
+@keyframes scoreDown {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.85); color: #f87171; }
+    100% { transform: scale(1); }
+}
