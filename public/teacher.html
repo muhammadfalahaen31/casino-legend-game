@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 CASINO GAME — TEACHER MODE</title>
+    <link rel="stylesheet" href="css/casino-theme.css">
+    <style>
+        .teacher-layout {
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem 3rem 1.5rem;
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .control-panel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .story-selector-tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.35rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .story-tab-chip {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .story-tab-chip:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .story-tab-chip.active {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #1a0f00;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .question-showcase-box {
+            background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,41,59,0.7));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .q-pills-row {
+            display: flex;
+            gap: 0.4rem;
+            overflow-x: auto;
+            padding-bottom: 0.25rem;
+        }
+
+        .q-pill-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .q-pill-btn:hover {
+            color: #fff;
+            border-color: var(--gold);
+        }
+
+        .q-pill-btn.active {
+            background: var(--gold);
+            color: #000;
+            border-color: #fff;
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        .q-options-display-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .q-option-line {
+            padding: 0.6rem 0.85rem;
+            border-radius: var(--radius-sm);
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-secondary);
+        }
+
+        .q-option-line.is-correct-key {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+            font-weight: 700;
+        }
+
+        .action-steps-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .answer-key-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-glass);
+        }
+
+        .key-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .key-btn:hover {
+            border-color: var(--gold);
+            color: #fff;
+        }
+
+        .key-btn.active {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #1a0f00;
+            border-color: #fff;
+            box-shadow: var(--shadow-glow-gold);
+            transform: scale(1.08);
+        }
+
+        .live-status-pill {
+            font-size: 0.95rem;
+            font-weight: 800;
+            padding: 0.45rem 1.1rem;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .round-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(245,158,11,0.12), rgba(6,182,212,0.12));
+            border: 1px solid var(--border-glass);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-lg);
+        }
+
+        .final-q-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            font-weight: 900;
+            font-size: 0.85rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            animation: pulseAllIn 1.5s infinite alternate;
+        }
+
+        /* Confetti canvas */
+        #teacher-confetti {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        /* PIN Security Screen */
+        .pin-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--border-glass);
+            background: rgba(255,255,255,0.05);
+            transition: var(--transition);
+        }
+        .pin-dot.filled {
+            background: var(--gold);
+            border-color: #fff;
+            box-shadow: 0 0 12px var(--gold);
+            transform: scale(1.15);
+        }
+        .pin-numpad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+        .pin-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 0.9rem;
+            color: #fff;
+            font-size: 1.35rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .pin-btn:hover, .pin-btn:active {
+            background: rgba(245,158,11,0.2);
+            border-color: var(--gold);
+            transform: scale(1.05);
+        }
+        .pin-btn.clear { color: #f87171; }
+        .pin-btn.backspace { color: #a5f3fc; }
+        @keyframes pinShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        .shake {
+            animation: pinShake 0.4s ease;
+        }
+
+        @media (max-width: 1050px) {
+            .teacher-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- MQTT Cloud Sync & Questions Data -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="js/questions-data.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+    <canvas id="teacher-confetti"></canvas>
+
+    <!-- PIN SECURITY OVERLAY (PIN: 3110) -->
+    <div class="casino-modal-overlay active" id="teacher-pin-overlay" style="z-index: 99999; backdrop-filter: blur(15px); background: rgba(5, 10, 25, 0.95);">
+        <div class="casino-modal-card" id="pin-modal-card" style="max-width: 420px; text-align: center; border: 2px solid var(--gold); box-shadow: var(--shadow-glow-gold);">
+            <div style="font-size: 3rem; filter: drop-shadow(0 0 15px var(--gold));">🔐</div>
+            <h2 style="font-size: 1.6rem; font-weight: 900; margin-top: 0.5rem; background: linear-gradient(90deg, #fff, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                TEACHER MODE SECURITY
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                Enter 4-Digit Teacher PIN to access Master Controls
+            </p>
+
+            <!-- PIN Display Dots -->
+            <div id="pin-dots-container" style="display: flex; justify-content: center; gap: 0.75rem; margin: 1.5rem 0 1rem 0;">
+                <div class="pin-dot" id="pdot-1"></div>
+                <div class="pin-dot" id="pdot-2"></div>
+                <div class="pin-dot" id="pdot-3"></div>
+                <div class="pin-dot" id="pdot-4"></div>
+            </div>
+
+            <div id="pin-error-msg" style="color: #f87171; font-size: 0.82rem; font-weight: 800; min-height: 1.2rem; margin-bottom: 0.5rem;"></div>
+
+            <!-- PIN Numpad Grid -->
+            <div class="pin-numpad-grid">
+                <button class="pin-btn" onclick="pressPin('1')">1</button>
+                <button class="pin-btn" onclick="pressPin('2')">2</button>
+                <button class="pin-btn" onclick="pressPin('3')">3</button>
+                <button class="pin-btn" onclick="pressPin('4')">4</button>
+                <button class="pin-btn" onclick="pressPin('5')">5</button>
+                <button class="pin-btn" onclick="pressPin('6')">6</button>
+                <button class="pin-btn" onclick="pressPin('7')">7</button>
+                <button class="pin-btn" onclick="pressPin('8')">8</button>
+                <button class="pin-btn" onclick="pressPin('9')">9</button>
+                <button class="pin-btn clear" onclick="clearPin()">C</button>
+                <button class="pin-btn" onclick="pressPin('0')">0</button>
+                <button class="pin-btn backspace" onclick="backspacePin()">⌫</button>
+            </div>
+
+            <div style="margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+                <a href="index.html" class="btn btn-outline" style="font-size: 0.75rem;">⬅ Back to Lobby</a>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">PIN: 3110</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="casino-header">
+        <div class="brand-title">
+            <span class="brand-icon">🎰</span>
+            <div>
+                <h1>CASINO GAME — TEACHER MODE</h1>
+                <span>SYNCHRONIZED READING QUESTION ROOM</span>
+            </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span id="online-sync-indicator" class="badge-pill emerald">⚡ Cloud Sync</span>
+            <button class="btn btn-outline" id="btn-sound" onclick="toggleSound()">🔊 Sound ON</button>
+            <button class="btn btn-outline" style="color: #f87171; border-color: rgba(239,68,68,0.4);" onclick="lockTeacherMode()" title="Lock Screen">🔒 Lock</button>
+            <div class="badge-pill cyan" style="font-family: monospace; font-size: 0.95rem;">ROOM: LGD-5274</div>
+            <a href="student.html" target="_blank" class="btn btn-outline" style="font-size: 0.8rem;">📱 Open Student Tab</a>
+        </div>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <main class="teacher-layout">
+
+        <!-- Left Column: Master Control & Group Live Table -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            
+            <!-- Story Switcher Tabs -->
+            <div class="story-selector-tabs">
+                <button class="story-tab-chip active" id="tab-story1" onclick="switchActiveStory('story1')">
+                    <span>🐒</span> Story 1: Lutung Kasarung
+                </button>
+                <button class="story-tab-chip" id="tab-story2" onclick="switchActiveStory('story2')">
+                    <span>🌊</span> Story 2: The Black Sea
+                </button>
+            </div>
+
+            <!-- Question & Status Banner -->
+            <div class="round-banner">
+                <div>
+                    <span id="display-story-tag" style="font-size: 0.75rem; color: var(--gold); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
+                        INDONESIAN LEGEND • WEST JAVA
+                    </span>
+                    <h2 id="display-question-num" style="font-size: 1.8rem; font-weight: 900; color: #fff;">
+                        QUESTION 1 <span style="font-size: 1.1rem; color: var(--text-muted);">/ 10</span>
+                    </h2>
+                </div>
+
+                <div id="final-q-badge" class="final-q-indicator" style="display: none;">
+                    🔥 FINAL QUESTION — ALL IN ACTIVE
+                </div>
+
+                <div>
+                    <span class="live-status-pill badge-pill gold" id="display-game-status">
+                        ⏳ WAITING FOR TEACHER
+                    </span>
+                </div>
+            </div>
+
+            <!-- Question Showcase & Options Display -->
+            <div class="question-showcase-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <div class="q-pills-row" id="question-pills-container">
+                        <!-- 10 Question Pill Jumpers -->
+                    </div>
+                    <span class="badge-pill purple" id="display-q-type-badge">Single Choice</span>
+                </div>
+
+                <div>
+                    <h3 id="display-q-text" style="font-size: 1.15rem; font-weight: 800; color: #fff; line-height: 1.4;">
+                        What is the main purpose of the text?
+                    </h3>
+                </div>
+
+                <div class="q-options-display-grid" id="display-q-options-list">
+                    <!-- Injected Options A-E -->
+                </div>
+
+                <!-- Explanation Box -->
+                <div id="display-q-explanation-box" style="display: none; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+                    <strong style="color: #6ee7b7; font-size: 0.85rem;">💡 Explanation:</strong>
+                    <p id="display-q-explanation-text" style="color: #e2e8f0; font-size: 0.88rem; margin-top: 0.25rem;"></p>
+                </div>
+            </div>
+
+            <!-- Teacher Control Action Center -->
+            <div class="control-panel-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="section-label">🎮 Round Control Flow</div>
+                    <button class="btn btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="toggleFinalQuestion()">
+                        🔥 Toggle Final Question (ALL-IN)
+                    </button>
+                </div>
+
+                <!-- Step Buttons -->
+                <div class="action-steps-bar">
+                    <button class="btn btn-primary" onclick="setGameStatus('BETTING_OPEN')">
+                        1. 💰 OPEN BETTING
+                    </button>
+                    <button class="btn btn-emerald" onclick="setGameStatus('ANSWERING_OPEN')">
+                        2. 📝 OPEN ANSWERS
+                    </button>
+                    <button class="btn btn-crimson" onclick="setGameStatus('LOCKED')">
+                        3. 🔒 LOCK ALL ANSWERS
+                    </button>
+                </div>
+
+                <!-- Reveal & Score Calculation Section -->
+                <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem; align-items: center; background: rgba(255,255,255,0.03); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-glass);">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">
+                                4. SELECT CORRECT ANSWER:
+                            </span>
+                            <button class="btn btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; color: var(--gold);" onclick="autoFillPresetKey()">
+                                ⚡ Auto-Fill Preset
+                            </button>
+                        </div>
+                        <div class="answer-key-selector">
+                            <button class="key-btn" onclick="selectCorrectAnswer('A')">A</button>
+                            <button class="key-btn" onclick="selectCorrectAnswer('B')">B</button>
+                            <button class="key-btn" onclick="selectCorrectAnswer('C')">C</button>
+                            <button class="key-btn" onclick="selectCorrectAnswer('D')">D</button>
+                            <button class="key-btn" onclick="selectCorrectAnswer('E')">E</button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <button class="btn btn-primary" onclick="calculateScore()" style="width: 100%;">
+                            ⚡ 5. CALCULATE SCORE
+                        </button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-outline" onclick="nextQuestion()" style="flex: 1; font-size: 0.85rem;">
+                                ➡ Next Question
+                            </button>
+                            <button class="btn btn-outline" onclick="resetRound()" style="font-size: 0.85rem;" title="Reset current round choices">
+                                🔄 Reset Round
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Group Score Board Table (Priority #1) -->
+            <div class="scoreboard-table-wrapper">
+                <div style="padding: 1.25rem 1.5rem; background: rgba(15,23,42,0.95); border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>📊</span> GROUP LIVE SCORE BOARD (5 GROUPS)
+                    </h3>
+                    <span style="font-size: 0.8rem; color: var(--emerald); font-weight: 700;">● Live Synchronized</span>
+                </div>
+
+                <table class="casino-table">
+                    <thead>
+                        <tr>
+                            <th>Group Name</th>
+                            <th>Current Capital</th>
+                            <th>Bet</th>
+                            <th>Answer</th>
+                            <th>Status / Result</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="group-rows-tbody">
+                        <!-- Injected via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Live Leaderboard & Tournament Actions -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Live Leaderboard Card -->
+            <div class="control-panel-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="section-label">🏆 LIVE LEADERBOARD</div>
+                    <span class="badge-pill gold" id="leaderboard-top-label">🥇 Leader</span>
+                </div>
+
+                <div id="live-leaderboard-list" style="display: flex; flex-direction: column; gap: 0.6rem;">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Global Game Actions -->
+            <div class="control-panel-card" style="border-color: rgba(239,68,68,0.3);">
+                <div class="section-label" style="color: #fca5a5;">⚙️ Tournament Controls</div>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button class="btn btn-emerald" onclick="triggerEndGame()">
+                        🏆 END GAME & SHOW CHAMPIONS
+                    </button>
+                    <button class="btn btn-outline" style="color: #f87171; border-color: rgba(239,68,68,0.4);" onclick="confirmResetGame()">
+                        ⚠️ RESET GAME (ALL TO 100)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Rename Group Modal -->
+    <div class="casino-modal-overlay" id="rename-modal">
+        <div class="casino-modal-card">
+            <h3 style="margin-bottom: 1rem; color: var(--gold);">✏️ Rename Group</h3>
+            <input type="text" id="rename-input" style="width: 100%; padding: 0.85rem 1rem; border-radius: var(--radius-md); background: rgba(0,0,0,0.4); border: 1px solid var(--border-glass); color: #fff; font-size: 1.1rem; margin-bottom: 1.25rem;" placeholder="Enter group name...">
+            <div style="display: flex; justify-content: center; gap: 1rem;">
+                <button class="btn btn-outline" onclick="closeRenameModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveGroupName()">Save Name</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Champions Finale Modal -->
+    <div class="casino-modal-overlay" id="finale-modal">
+        <div class="casino-modal-card" style="max-width: 650px;">
+            <span style="font-size: 3rem;">🎉 🏆 🎊</span>
+            <h2 style="font-size: 2.2rem; font-weight: 900; background: linear-gradient(90deg, #fff, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0.5rem 0;">
+                CASINO GAME CHAMPIONS!
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Congratulations to all 5 groups for legendary strategy & reading comprehension!
+            </p>
+
+            <!-- 3D Podium -->
+            <div class="podium-grid" id="finale-podium">
+                <!-- Injected via JS -->
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+                <button class="btn btn-primary" onclick="launchConfetti(4000)">🎊 More Confetti</button>
+                <button class="btn btn-outline" onclick="closeFinaleModal()">Close Board</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/audio-fx.js"></script>
+    <script src="js/realtime-sync.js"></script>
+    <script>
+        const TEACHER_PIN = "3110";
+        let enteredPin = "";
+        let selectedCorrectKey = null;
+        let activeRenameGroupId = null;
+        let localState = null;
+
+        const GROUP_ICONS = {
+            group1: '🐉',
+            group2: '🦅',
+            group3: '🐅',
+            group4: '🦁',
+            group5: '🐺'
+        };
+
+        // Initialize Realtime Sync for Teacher & PIN Check
+        window.addEventListener('DOMContentLoaded', () => {
+            checkPinAuth();
+
+            casinoSync.init('teacher', null, (state) => {
+                localState = state;
+                renderTeacherDashboard(state);
+            });
+        });
+
+        // PIN Security Authentication (PIN: 3110)
+        function checkPinAuth() {
+            const isAuth = sessionStorage.getItem('casino_teacher_pin_auth') === 'true';
+            const overlay = document.getElementById('teacher-pin-overlay');
+            if (overlay) {
+                if (isAuth) {
+                    overlay.classList.remove('active');
+                } else {
+                    overlay.classList.add('active');
+                    clearPin();
+                }
+            }
+        }
+
+        function pressPin(digit) {
+            if (enteredPin.length >= 4) return;
+            casinoAudio.play('chip');
+            enteredPin += digit;
+            updatePinDots();
+            if (enteredPin.length === 4) {
+                setTimeout(verifyPin, 150);
+            }
+        }
+
+        function backspacePin() {
+            casinoAudio.play('click');
+            enteredPin = enteredPin.slice(0, -1);
+            updatePinDots();
+            document.getElementById('pin-error-msg').innerText = '';
+        }
+
+        function clearPin() {
+            enteredPin = '';
+            updatePinDots();
+            document.getElementById('pin-error-msg').innerText = '';
+        }
+
+        function updatePinDots() {
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(`pdot-${i}`);
+                if (dot) dot.classList.toggle('filled', i <= enteredPin.length);
+            }
+        }
+
+        function verifyPin() {
+            if (enteredPin === TEACHER_PIN) {
+                casinoAudio.play('correct');
+                sessionStorage.setItem('casino_teacher_pin_auth', 'true');
+                document.getElementById('teacher-pin-overlay').classList.remove('active');
+                document.getElementById('pin-error-msg').innerText = '';
+            } else {
+                casinoAudio.play('wrong');
+                const card = document.getElementById('pin-modal-card');
+                card.classList.add('shake');
+                document.getElementById('pin-error-msg').innerText = '⚠️ Incorrect PIN (Try: 3110)';
+                setTimeout(() => {
+                    card.classList.remove('shake');
+                    clearPin();
+                }, 500);
+            }
+        }
+
+        function lockTeacherMode() {
+            sessionStorage.removeItem('casino_teacher_pin_auth');
+            checkPinAuth();
+        }
+
+        // Physical Keyboard listener for PIN
+        window.addEventListener('keydown', (e) => {
+            const overlay = document.getElementById('teacher-pin-overlay');
+            if (overlay && overlay.classList.contains('active')) {
+                if (e.key >= '0' && e.key <= '9') {
+                    pressPin(e.key);
+                } else if (e.key === 'Backspace') {
+                    backspacePin();
+                } else if (e.key === 'Escape') {
+                    clearPin();
+                }
+            }
+        });
+
+        function switchActiveStory(storyKey) {
+            casinoAudio.play('click');
+            casinoSync.teacherAction('setStory', { story: storyKey });
+        }
+
+        function jumpToQuestion(qIndex) {
+            casinoAudio.play('click');
+            casinoSync.teacherAction('setQuestionIndex', { questionIndex: qIndex });
+        }
+
+        function isCurrentQuestionComplex(state) {
+            if (!state) return false;
+            const storyKey = state.activeStory || 'story1';
+            const qIdx = (state.currentQuestion || 1) - 1;
+            const qData = state.currentQuestionData || (window.CASINO_QUIZ_DATA && window.CASINO_QUIZ_DATA[storyKey] && window.CASINO_QUIZ_DATA[storyKey].questions[qIdx]);
+            if (!qData) return false;
+            return qData.type === 'complex' || (Array.isArray(qData.correctAnswer) && qData.correctAnswer.length > 1);
+        }
+
+        function autoFillPresetKey() {
+            if (!localState) return;
+            const storyKey = localState.activeStory || 'story1';
+            const qIdx = (localState.currentQuestion || 1) - 1;
+            const qData = localState.currentQuestionData || (window.CASINO_QUIZ_DATA && window.CASINO_QUIZ_DATA[storyKey] && window.CASINO_QUIZ_DATA[storyKey].questions[qIdx]);
+            if (qData) {
+                casinoAudio.play('chip');
+                let presetKeys = qData.correctAnswer || qData.validKeys || [qData.answerKey || 'A'];
+                if (!Array.isArray(presetKeys)) presetKeys = [presetKeys];
+                
+                selectedCorrectKey = [...presetKeys];
+                const keyStr = selectedCorrectKey.sort().join(',');
+                casinoSync.teacherAction('setCorrectAnswer', { correctAnswer: keyStr });
+            }
+        }
+
+        function renderQuestionShowcase(state) {
+            const storyKey = state.activeStory || 'story1';
+            const storyInfo = (window.CASINO_QUIZ_DATA && window.CASINO_QUIZ_DATA[storyKey]) || {
+                title: storyKey === 'story1' ? 'The Legend of Lutung Kasarung' : 'The Legend of the Black Sea',
+                tag: storyKey === 'story1' ? 'INDONESIAN LEGEND • WEST JAVA' : 'EUROPEAN / UKRAINIAN MYTH'
+            };
+
+            // Story Tab Active States
+            const tab1 = document.getElementById('tab-story1');
+            const tab2 = document.getElementById('tab-story2');
+            if (tab1) tab1.classList.toggle('active', storyKey === 'story1');
+            if (tab2) tab2.classList.toggle('active', storyKey === 'story2');
+
+            // Story Tag
+            const storyTag = document.getElementById('display-story-tag');
+            if (storyTag) storyTag.innerText = storyInfo.tag;
+
+            // Question Pills (1..10)
+            const pillsContainer = document.getElementById('question-pills-container');
+            if (pillsContainer) {
+                pillsContainer.innerHTML = '';
+                const total = state.totalQuestions || 10;
+                for (let i = 1; i <= total; i++) {
+                    const pill = document.createElement('button');
+                    pill.className = `q-pill-btn ${i === state.currentQuestion ? 'active' : ''}`;
+                    pill.innerText = `Q${i}`;
+                    pill.onclick = () => jumpToQuestion(i);
+                    pillsContainer.appendChild(pill);
+                }
+            }
+
+            // Current Question Data
+            const qIdx = (state.currentQuestion || 1) - 1;
+            const qData = state.currentQuestionData || (window.CASINO_QUIZ_DATA && window.CASINO_QUIZ_DATA[storyKey] && window.CASINO_QUIZ_DATA[storyKey].questions[qIdx]);
+
+            if (qData) {
+                // Type Badge
+                const typeBadge = document.getElementById('display-q-type-badge');
+                const isComplex = qData.type === 'complex' || (Array.isArray(qData.correctAnswer) && qData.correctAnswer.length > 1);
+                if (typeBadge) {
+                    typeBadge.innerText = isComplex ? 'Complex Multiple Choice' : 'Single Choice';
+                    typeBadge.className = isComplex ? 'badge-pill cyan' : 'badge-pill purple';
+                }
+
+                // Question Text
+                const qText = document.getElementById('display-q-text');
+                if (qText) qText.innerText = qData.question || qData.text || '';
+
+                // Normalize Options to array
+                let optArray = [];
+                if (Array.isArray(qData.options)) {
+                    optArray = qData.options;
+                } else if (typeof qData.options === 'object' && qData.options !== null) {
+                    optArray = Object.entries(qData.options).map(([k, v]) => ({ key: k, text: v }));
+                }
+
+                const validKeys = qData.correctAnswer || qData.validKeys || [qData.answerKey || 'A'];
+
+                // Options List
+                const optList = document.getElementById('display-q-options-list');
+                if (optList && optArray.length > 0) {
+                    optList.innerHTML = '';
+                    const isRevealed = state.gameStatus === 'REVEALED' || state.gameStatus === 'CALCULATED';
+                    const correctKey = state.correctAnswer;
+
+                    optArray.forEach(opt => {
+                        const isCorrectOption = isRevealed && (opt.key === correctKey || (validKeys && validKeys.includes(opt.key)));
+                        const item = document.createElement('div');
+                        item.className = `q-opt-item ${isCorrectOption ? 'correct-highlight' : ''}`;
+                        item.innerHTML = `
+                            <span class="opt-badge">${opt.key}</span>
+                            <span class="opt-text">${opt.text}</span>
+                            ${isCorrectOption ? '<span style="color: #10b981; font-weight: 800; font-size: 0.9rem;">✓ CORRECT</span>' : ''}
+                        `;
+                        optList.appendChild(item);
+                    });
+                }
+
+                // Explanation Box
+                const expBox = document.getElementById('display-q-explanation-box');
+                const expText = document.getElementById('display-q-explanation-text');
+                if (expBox && expText) {
+                    if ((state.gameStatus === 'REVEALED' || state.gameStatus === 'CALCULATED') && qData.explanation) {
+                        expBox.style.display = 'block';
+                        expText.innerText = qData.explanation;
+                    } else {
+                        expBox.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        function renderTeacherDashboard(state) {
+            if (!state) return;
+
+            // Update Round Banner
+            document.getElementById('display-question-num').innerHTML = `
+                QUESTION ${state.currentQuestion} <span style="font-size: 1.1rem; color: var(--text-muted);">/ ${state.totalQuestions || 10}</span>
+            `;
+
+            // Final Question Indicator
+            document.getElementById('final-q-badge').style.display = state.finalQuestion ? 'inline-flex' : 'none';
+
+            // Render Synchronized Question & Options Showcase
+            renderQuestionShowcase(state);
+
+            // Game Status Badge
+            const statusBadge = document.getElementById('display-game-status');
+            const status = state.gameStatus;
+            
+            if (status === 'BETTING_OPEN') {
+                statusBadge.className = 'live-status-pill badge-pill gold';
+                statusBadge.innerText = '💰 BETTING OPEN';
+            } else if (status === 'ANSWERING_OPEN') {
+                statusBadge.className = 'live-status-pill badge-pill cyan';
+                statusBadge.innerText = '📝 ANSWERING OPEN';
+            } else if (status === 'LOCKED') {
+                statusBadge.className = 'live-status-pill badge-pill crimson';
+                statusBadge.innerText = '🔒 ANSWERS LOCKED';
+            } else if (status === 'REVEALED') {
+                statusBadge.className = 'live-status-pill badge-pill purple';
+                statusBadge.innerText = `💡 ANSWER REVEALED: ${state.correctAnswer}`;
+            } else if (status === 'CALCULATED') {
+                statusBadge.className = 'live-status-pill badge-pill emerald';
+                statusBadge.innerText = '✅ SCORES CALCULATED';
+            } else if (status === 'ENDED') {
+                statusBadge.className = 'live-status-pill badge-pill gold';
+                statusBadge.innerText = '🏆 GAME COMPLETED';
+            } else {
+                statusBadge.className = 'live-status-pill badge-pill gold';
+                statusBadge.innerText = '⏳ WAITING FOR TEACHER';
+            }
+
+            // Sync Correct Answer buttons
+            selectedCorrectKey = state.correctAnswer;
+            const activeKeys = state.correctAnswer 
+                ? (Array.isArray(state.correctAnswer) ? state.correctAnswer : String(state.correctAnswer).split(/[\s,]+/))
+                : [];
+
+            document.querySelectorAll('.key-btn').forEach(btn => {
+                btn.classList.toggle('active', activeKeys.includes(btn.innerText.trim()));
+            });
+
+            // Render Group Scoreboard Table (Priority 1)
+            const tbody = document.getElementById('group-rows-tbody');
+            tbody.innerHTML = '';
+
+            Object.entries(state.groups).forEach(([gId, group]) => {
+                const icon = GROUP_ICONS[gId] || '👥';
+                
+                // Status formatting
+                let statusHtml = '<span class="status-indicator waiting">⏳ Waiting</span>';
+                if (group.status === 'SUBMITTED') {
+                    statusHtml = '<span class="status-indicator submitted">🔒 Submitted</span>';
+                } else if (group.status === 'CORRECT') {
+                    statusHtml = `<span class="status-indicator correct">🎉 Correct (+${group.lastDelta})</span>`;
+                } else if (group.status === 'WRONG') {
+                    statusHtml = `<span class="status-indicator wrong">❌ Wrong (${group.lastDelta})</span>`;
+                } else if (group.status === 'LOCKED') {
+                    statusHtml = '<span class="status-indicator locked">🔒 Locked</span>';
+                }
+
+                // Bet display
+                const betDisplay = group.bet !== null && group.bet !== undefined
+                    ? `<span class="bet-badge">💰 ${group.bet}</span>`
+                    : `<span style="color: var(--text-muted);">—</span>`;
+
+                // Answer display (handles single & multiple MCMA)
+                const formattedAns = group.answer ? group.answer.replace(/,/g, ', ') : '—';
+                const ansDisplay = group.answer
+                    ? `<span class="answer-badge">${formattedAns}</span>`
+                    : `<span style="color: var(--text-muted);">—</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="group-name-cell">
+                            <div class="group-avatar">${icon}</div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 1.05rem;">${group.name}</div>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">${gId.toUpperCase()}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="capital-display">${group.capital}</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">pts</span>
+                    </td>
+                    <td>${betDisplay}</td>
+                    <td>${ansDisplay}</td>
+                    <td>${statusHtml}</td>
+                    <td>
+                        <div style="display: flex; gap: 0.4rem;">
+                            <button class="btn btn-outline" style="padding: 0.35rem 0.6rem; font-size: 0.75rem;" onclick="openRenameModal('${gId}', '${group.name}')" title="Rename Group">
+                                ✏️
+                            </button>
+                            <button class="btn btn-outline" style="padding: 0.35rem 0.6rem; font-size: 0.75rem;" onclick="quickAdjustCapital('${gId}', 25)" title="+25 Points">
+                                +25
+                            </button>
+                            <button class="btn btn-outline" style="padding: 0.35rem 0.6rem; font-size: 0.75rem; color: #f87171;" onclick="quickAdjustCapital('${gId}', -25)" title="-25 Points">
+                                −25
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Render Live Leaderboard
+            renderLiveLeaderboard(state.groups);
+        }
+
+        function renderLiveLeaderboard(groupsObj) {
+            const list = document.getElementById('live-leaderboard-list');
+            list.innerHTML = '';
+
+            const sorted = Object.values(groupsObj).sort((a, b) => b.capital - a.capital);
+
+            sorted.forEach((group, idx) => {
+                let medal = `${idx + 1}`;
+                let rankClass = '';
+                if (idx === 0) { medal = '🥇 1'; rankClass = 'style="color: #fbbf24; font-weight: 900;"'; }
+                else if (idx === 1) { medal = '🥈 2'; rankClass = 'style="color: #cbd5e1; font-weight: 800;"'; }
+                else if (idx === 2) { medal = '🥉 3'; rankClass = 'style="color: #f97316; font-weight: 800;"'; }
+
+                const row = document.createElement('div');
+                row.style = `
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0.75rem 1rem;
+                    background: rgba(255,255,255,0.03);
+                    border: 1px solid var(--border-glass);
+                    border-radius: var(--radius-md);
+                `;
+                row.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span ${rankClass} style="font-size: 1.1rem; width: 45px;">${medal}</span>
+                        <span style="font-weight: 700; font-size: 0.95rem;">${group.name}</span>
+                    </div>
+                    <div style="font-size: 1.15rem; font-weight: 900; color: var(--gold-light);">
+                        ${group.capital} <span style="font-size: 0.75rem; color: var(--text-muted);">pts</span>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        // Action Handlers
+        function setGameStatus(status) {
+            casinoAudio.play('click');
+            casinoSync.teacherAction('setStatus', { status });
+        }
+
+        function selectCorrectAnswer(key) {
+            casinoAudio.play('chip');
+
+            const isComplex = isCurrentQuestionComplex(localState);
+
+            if (isComplex) {
+                let currentKeys = selectedCorrectKey 
+                    ? (Array.isArray(selectedCorrectKey) ? [...selectedCorrectKey] : String(selectedCorrectKey).split(/[\s,]+/))
+                    : [];
+
+                const idx = currentKeys.indexOf(key);
+                if (idx > -1) {
+                    currentKeys.splice(idx, 1);
+                } else {
+                    currentKeys.push(key);
+                    currentKeys.sort();
+                }
+
+                selectedCorrectKey = currentKeys;
+                const resultStr = currentKeys.join(',');
+                casinoSync.teacherAction('setCorrectAnswer', { correctAnswer: resultStr });
+            } else {
+                selectedCorrectKey = [key];
+                casinoSync.teacherAction('setCorrectAnswer', { correctAnswer: key });
+            }
+        }
+
+        function calculateScore() {
+            if (!selectedCorrectKey) {
+                alert('Please select a Correct Answer first (A, B, C, D, or E)!');
+                return;
+            }
+            casinoAudio.play('correct');
+            launchConfetti(2000);
+            casinoSync.teacherAction('calculateScore');
+        }
+
+        function nextQuestion() {
+            casinoAudio.play('click');
+            casinoSync.teacherAction('nextQuestion');
+        }
+
+        function resetRound() {
+            if (confirm('Reset current round bets and answers for all groups?')) {
+                casinoAudio.play('click');
+                casinoSync.teacherAction('resetRound');
+            }
+        }
+
+        function toggleFinalQuestion() {
+            casinoAudio.play('chip');
+            const current = localState ? localState.finalQuestion : false;
+            casinoSync.teacherAction('toggleFinalQuestion', { finalQuestion: !current });
+        }
+
+        function quickAdjustCapital(groupId, delta) {
+            casinoAudio.play('chip');
+            casinoSync.teacherAction('adjustCapital', { groupId, delta });
+        }
+
+        function openRenameModal(groupId, currentName) {
+            activeRenameGroupId = groupId;
+            document.getElementById('rename-input').value = currentName;
+            document.getElementById('rename-modal').classList.add('active');
+        }
+
+        function closeRenameModal() {
+            document.getElementById('rename-modal').classList.remove('active');
+        }
+
+        function saveGroupName() {
+            const newName = document.getElementById('rename-input').value.trim();
+            if (newName && activeRenameGroupId) {
+                casinoSync.teacherAction('renameGroup', { groupId: activeRenameGroupId, newName });
+            }
+            closeRenameModal();
+        }
+
+        function confirmResetGame() {
+            if (confirm('⚠️ Are you sure you want to RESET THE GAME?\nAll groups will return to 100 points and round 1.')) {
+                casinoAudio.play('confirm');
+                casinoSync.teacherAction('resetGame');
+            }
+        }
+
+        function triggerEndGame() {
+            casinoAudio.play('correct');
+            launchConfetti(5000);
+            casinoSync.teacherAction('endGame');
+
+            if (localState && localState.groups) {
+                const sorted = Object.values(localState.groups).sort((a, b) => b.capital - a.capital);
+                const podium = document.getElementById('finale-podium');
+                podium.innerHTML = `
+                    <div class="podium-card rank-2">
+                        <div class="podium-medal">🥈</div>
+                        <h4 style="font-size: 1.1rem; font-weight: 800;">${sorted[1] ? sorted[1].name : 'Group 2'}</h4>
+                        <div style="font-size: 1.4rem; font-weight: 900; color: #cbd5e1;">${sorted[1] ? sorted[1].capital : 0} pts</div>
+                        <span class="badge-pill" style="font-size: 0.75rem;">2nd Place</span>
+                    </div>
+                    <div class="podium-card rank-1">
+                        <div class="podium-medal">🥇</div>
+                        <h4 style="font-size: 1.3rem; font-weight: 900; color: var(--gold);">${sorted[0] ? sorted[0].name : 'Group 1'}</h4>
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #fff;">${sorted[0] ? sorted[0].capital : 0} pts</div>
+                        <span class="badge-pill gold" style="font-size: 0.85rem;">🏆 GRAND CHAMPION</span>
+                    </div>
+                    <div class="podium-card rank-3">
+                        <div class="podium-medal">🥉</div>
+                        <h4 style="font-size: 1rem; font-weight: 800;">${sorted[2] ? sorted[2].name : 'Group 3'}</h4>
+                        <div style="font-size: 1.3rem; font-weight: 900; color: #f97316;">${sorted[2] ? sorted[2].capital : 0} pts</div>
+                        <span class="badge-pill" style="font-size: 0.75rem;">3rd Place</span>
+                    </div>
+                `;
+            }
+
+            document.getElementById('finale-modal').classList.add('active');
+        }
+
+        function closeFinaleModal() {
+            document.getElementById('finale-modal').classList.remove('active');
+        }
+
+        function toggleSound() {
+            casinoAudio.enabled = !casinoAudio.enabled;
+            document.getElementById('btn-sound').innerText = casinoAudio.enabled ? "🔊 Sound ON" : "🔇 Sound OFF";
+        }
+
+        // Confetti Engine
+        function launchConfetti(durationMs = 3000) {
+            const canvas = document.getElementById('teacher-confetti');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#f59e0b', '#10b981', '#06b6d4', '#8b5cf6', '#ef4444', '#fff'];
+
+            for (let i = 0; i < 120; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * -canvas.height,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedY: Math.random() * 4 + 3,
+                    speedX: Math.random() * 2 - 1,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 6 - 3
+                });
+            }
+
+            const startTime = Date.now();
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotationSpeed;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                });
+
+                if (Date.now() - startTime < durationMs) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
