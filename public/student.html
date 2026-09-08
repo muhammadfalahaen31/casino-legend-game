@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎰 CASINO GAME — STUDENT MODE</title>
+    <link rel="stylesheet" href="css/casino-theme.css">
+    <style>
+        .group-select-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.85rem;
+            width: 100%;
+        }
+
+        .group-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 1.1rem 1.25rem;
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .group-btn:hover, .group-btn:active {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--gold);
+            transform: scale(1.02);
+        }
+
+        .group-btn-icon {
+            font-size: 1.6rem;
+        }
+
+        .status-hero-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 0.85rem 1.25rem;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .confirm-box {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .choice-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .choice-summary-val {
+            font-weight: 900;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .locked-overlay-notice {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid #10b981;
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .student-question-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .student-opt-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.5rem 0.65rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .student-opt-row:hover {
+            background: rgba(245, 158, 11, 0.08);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .student-opt-row.selected {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: var(--cyan);
+        }
+
+        .student-opt-row.correct-revealed {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+
+        .student-opt-badge {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--gold-light);
+            font-weight: 900;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .student-opt-badge.checkbox-style {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.95rem;
+        }
+
+        .student-opt-row.selected .student-opt-badge.checkbox-style {
+            background: var(--cyan);
+            border-color: #fff;
+            color: #042f2e;
+            font-weight: 900;
+        }
+
+        .mcma-notice-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--gold);
+            color: var(--gold-light);
+            margin-bottom: 0.6rem;
+        }
+    </style>
+    <!-- MQTT Cloud Sync, Questions Data & Socket.io script -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="js/questions-data.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="casino-header">
+        <div class="brand-title">
+            <span class="brand-icon">🎰</span>
+            <div>
+                <h1>CASINO GAME</h1>
+                <span id="student-header-group">SELECT GROUP</span>
+            </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span id="online-sync-indicator" class="badge-pill emerald" style="font-size: 0.72rem;">⚡ Cloud Sync</span>
+            <span class="badge-pill gold" id="header-question-badge">Q1 / 10</span>
+        </div>
+    </header>
+
+    <main class="student-container">
+
+        <!-- STEP 1: GROUP SELECTION SCREEN -->
+        <div id="screen-group-select" class="student-card">
+            <div style="text-align: center;">
+                <span style="font-size: 2.5rem;">👥</span>
+                <h2 style="font-size: 1.4rem; font-weight: 900; margin-top: 0.25rem; color: #fff;">SELECT YOUR GROUP</h2>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                    Join as one of the 5 competition groups
+                </p>
+            </div>
+
+            <div class="group-select-grid" id="group-buttons-container">
+                <button class="group-btn" onclick="selectGroup('group1')">
+                    <span style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span class="group-btn-icon">🐉</span>
+                        <span id="label-group1">GROUP 1</span>
+                    </span>
+                    <span style="color: var(--gold); font-size: 0.9rem;">Join ➡</span>
+                </button>
+
+                <button class="group-btn" onclick="selectGroup('group2')">
+                    <span style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span class="group-btn-icon">🦅</span>
+                        <span id="label-group2">GROUP 2</span>
+                    </span>
+                    <span style="color: var(--gold); font-size: 0.9rem;">Join ➡</span>
+                </button>
+
+                <button class="group-btn" onclick="selectGroup('group3')">
+                    <span style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span class="group-btn-icon">🐅</span>
+                        <span id="label-group3">GROUP 3</span>
+                    </span>
+                    <span style="color: var(--gold); font-size: 0.9rem;">Join ➡</span>
+                </button>
+
+                <button class="group-btn" onclick="selectGroup('group4')">
+                    <span style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span class="group-btn-icon">🦁</span>
+                        <span id="label-group4">GROUP 4</span>
+                    </span>
+                    <span style="color: var(--gold); font-size: 0.9rem;">Join ➡</span>
+                </button>
+
+                <button class="group-btn" onclick="selectGroup('group5')">
+                    <span style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span class="group-btn-icon">🐺</span>
+                        <span id="label-group5">GROUP 5</span>
+                    </span>
+                    <span style="color: var(--gold); font-size: 0.9rem;">Join ➡</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 2: GROUP INTERACTIVE DASHBOARD -->
+        <div id="screen-group-dashboard" class="student-card" style="display: none;">
+            
+            <!-- Group Header & Switch Link -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span id="dash-group-icon" style="font-size: 1.5rem;">🐉</span>
+                    <h3 id="dash-group-name" style="font-size: 1.25rem; font-weight: 900; color: #fff;">Group 1</h3>
+                    <button class="btn btn-outline" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;" onclick="openStudentRenameModal()" title="Rename your team">
+                        ✏️ Edit Name
+                    </button>
+                </div>
+                <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="switchGroup()">
+                    Switch Group
+                </button>
+            </div>
+
+            <!-- Current Capital Banner -->
+            <div class="student-capital-banner">
+                <h2>💰 Current Capital</h2>
+                <div class="capital-num" id="dash-capital-display">100</div>
+                <span style="font-size: 0.8rem; color: var(--gold-light); font-weight: 700; letter-spacing: 1px;">POINTS</span>
+            </div>
+
+            <!-- Real-time Status Alert -->
+            <div class="status-hero-card" id="student-status-box">
+                <span>⏳</span> <span id="student-status-text">WAITING FOR TEACHER</span>
+            </div>
+
+            <!-- Live Synchronized Question Card -->
+            <div class="student-question-card" id="student-question-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.3rem;">
+                    <span class="badge-pill gold" id="student-story-badge" style="font-size: 0.72rem;">🐒 LUTUNG KASARUNG</span>
+                    <span class="badge-pill purple" id="student-q-type-badge" style="font-size: 0.72rem;">Question 1</span>
+                </div>
+                
+                <div id="student-mcma-notice" class="mcma-notice-pill" style="display: none;">
+                    <span>☑️</span> MULTIPLE CHOICES (Select all correct options)
+                </div>
+
+                <div id="student-question-text" style="font-size: 1rem; font-weight: 800; color: #fff; line-height: 1.4; margin-bottom: 0.75rem;">
+                    Loading question...
+                </div>
+                <div id="student-options-container" style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <!-- Synchronized Options A-E rendered via JS -->
+                </div>
+            </div>
+
+            <!-- Lock Notice (Shown when submitted) -->
+            <div class="locked-overlay-notice" id="locked-submission-notice">
+                <span style="font-size: 2rem;">🔒</span>
+                <strong style="color: #6ee7b7; font-size: 1.1rem;">ANSWER SUBMITTED</strong>
+                <span style="font-size: 0.85rem; color: #cbd5e1;">Your bet and answer are locked in real-time.</span>
+            </div>
+
+            <!-- Betting Chips Area (Priority 2) -->
+            <div id="betting-area-section">
+                <div class="section-label">
+                    <span>🪙</span> Place Your Bet
+                </div>
+                <div class="chips-grid" id="chips-container">
+                    <div class="casino-chip chip-25" id="chip-btn-25" onclick="selectBet(25)">
+                        <span class="chip-val">25</span>
+                        <span class="chip-lbl">Pts</span>
+                    </div>
+                    <div class="casino-chip chip-50" id="chip-btn-50" onclick="selectBet(50)">
+                        <span class="chip-val">50</span>
+                        <span class="chip-lbl">Pts</span>
+                    </div>
+                    <div class="casino-chip chip-75" id="chip-btn-75" onclick="selectBet(75)">
+                        <span class="chip-val">75</span>
+                        <span class="chip-lbl">Pts</span>
+                    </div>
+                    <div class="casino-chip chip-100" id="chip-btn-100" onclick="selectBet(100)">
+                        <span class="chip-val">100</span>
+                        <span class="chip-lbl">Pts</span>
+                    </div>
+                    <!-- Dynamic Max/All-In Chip -->
+                    <div class="casino-chip chip-allin" id="chip-btn-allin" style="display: none;" onclick="selectAllInBet()">
+                        <span class="chip-val" id="chip-allin-val">ALL</span>
+                        <span class="chip-lbl">IN</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Answer Selection Area (Priority 3) -->
+            <div id="answer-area-section">
+                <div class="section-label">
+                    <span>📝</span> Choose Your Answer
+                </div>
+                <div class="answers-grid">
+                    <button class="answer-card" id="ans-btn-A" onclick="selectAnswer('A')">A</button>
+                    <button class="answer-card" id="ans-btn-B" onclick="selectAnswer('B')">B</button>
+                    <button class="answer-card" id="ans-btn-C" onclick="selectAnswer('C')">C</button>
+                    <button class="answer-card" id="ans-btn-D" onclick="selectAnswer('D')">D</button>
+                    <button class="answer-card" id="ans-btn-E" onclick="selectAnswer('E')">E</button>
+                </div>
+            </div>
+
+            <!-- Confirm Box (Priority 4) -->
+            <div class="confirm-box" id="confirm-box-section">
+                <div class="choice-summary-row">
+                    <span>SELECTED BET:</span>
+                    <span class="choice-summary-val" id="summary-bet-val" style="color: var(--gold-light);">—</span>
+                </div>
+                <div class="choice-summary-row">
+                    <span>SELECTED ANSWER:</span>
+                    <span class="choice-summary-val" id="summary-ans-val" style="color: #a5f3fc;">—</span>
+                </div>
+                <button class="btn btn-primary" id="btn-confirm-choice" style="width: 100%; font-size: 1.1rem; padding: 0.9rem;" onclick="confirmSubmission()">
+                    🔒 CONFIRM YOUR CHOICE
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Student Result Modal -->
+    <div class="casino-modal-overlay" id="student-result-modal">
+        <div class="casino-modal-card">
+            <div id="res-icon-hero" style="font-size: 3.5rem;">🎉</div>
+            <h2 id="res-title-text" style="font-size: 2rem; font-weight: 900; margin: 0.5rem 0;">CORRECT!</h2>
+            <div id="res-delta-badge" class="badge-pill emerald" style="font-size: 1.3rem; padding: 0.5rem 1.25rem; margin-bottom: 1.25rem;">
+                +75 POINTS
+            </div>
+
+            <div style="background: rgba(0,0,0,0.35); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    <span>Previous Capital:</span>
+                    <span id="res-prev-capital" style="font-weight: 700; color: #fff;">100 pts</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 900; color: var(--gold-light);">
+                    <span>New Capital:</span>
+                    <span id="res-new-capital">175 pts</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="closeResultModal()">
+                Continue ➡
+            </button>
+        </div>
+    </div>
+
+    <!-- Student Rename Group Modal -->
+    <div class="casino-modal-overlay" id="student-rename-modal">
+        <div class="casino-modal-card">
+            <h3 style="margin-bottom: 0.5rem; color: var(--gold);">✏️ Edit Group Name</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                Enter a custom team name (e.g. Team Garuda, The Legends, etc.)
+            </p>
+            <input type="text" id="student-rename-input" style="width: 100%; padding: 0.85rem 1rem; border-radius: var(--radius-md); background: rgba(0,0,0,0.4); border: 1px solid var(--border-glass); color: #fff; font-size: 1.1rem; margin-bottom: 1.25rem;" placeholder="Enter new team name...">
+            <div style="display: flex; justify-content: center; gap: 1rem;">
+                <button class="btn btn-outline" onclick="closeStudentRenameModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveStudentGroupName()">Save Name</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/audio-fx.js"></script>
+    <script src="js/realtime-sync.js"></script>
+    <script>
+        let myGroupId = localStorage.getItem('casino_my_group_id') || null;
+        let selectedBet = null;
+        let selectedAns = [];
+        let isConfirmed = false;
+        let currentGameState = null;
+        let previousCapital = 100;
+        let currentQuestionTrackingKey = null;
+
+        const GROUP_ICONS = {
+            group1: '🐉',
+            group2: '🦅',
+            group3: '🐅',
+            group4: '🦁',
+            group5: '🐺'
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (myGroupId) {
+                initStudentView();
+            }
+
+            casinoSync.init('student', myGroupId, (state) => {
+                currentGameState = state;
+                renderStudentState(state);
+            });
+        });
+
+        function openStudentRenameModal() {
+            if (!myGroupId || !currentGameState) return;
+            const currentName = currentGameState.groups[myGroupId] ? currentGameState.groups[myGroupId].name : '';
+            document.getElementById('student-rename-input').value = currentName;
+            document.getElementById('student-rename-modal').classList.add('active');
+        }
+
+        function closeStudentRenameModal() {
+            document.getElementById('student-rename-modal').classList.remove('active');
+        }
+
+        function saveStudentGroupName() {
+            const newName = document.getElementById('student-rename-input').value.trim();
+            if (newName && myGroupId) {
+                casinoAudio.play('confirm');
+                casinoSync.renameGroup(myGroupId, newName);
+            }
+            closeStudentRenameModal();
+        }
+
+        function selectGroup(groupId) {
+            casinoAudio.play('chip');
+            myGroupId = groupId;
+            localStorage.setItem('casino_my_group_id', groupId);
+            initStudentView();
+            casinoSync.init('student', groupId, (state) => {
+                currentGameState = state;
+                renderStudentState(state);
+            });
+        }
+
+        function switchGroup() {
+            myGroupId = null;
+            localStorage.removeItem('casino_my_group_id');
+            document.getElementById('screen-group-select').style.display = 'flex';
+            document.getElementById('screen-group-dashboard').style.display = 'none';
+            document.getElementById('student-header-group').innerText = 'SELECT GROUP';
+        }
+
+        function initStudentView() {
+            document.getElementById('screen-group-select').style.display = 'none';
+            document.getElementById('screen-group-dashboard').style.display = 'flex';
+            document.getElementById('dash-group-icon').innerText = GROUP_ICONS[myGroupId] || '👥';
+        }
+
+        function isCurrentQuestionComplex(state) {
+            if (!state) return false;
+            const storyKey = state.activeStory || 'story1';
+            const qIdx = (state.currentQuestion || 1) - 1;
+            const qData = state.currentQuestionData || (window.CASINO_QUIZ_DATA && window.CASINO_QUIZ_DATA[storyKey] && window.CASINO_QUIZ_DATA[storyKey].questions[qIdx]);
+            if (!qData) return false;
+            return qData.type === 'complex' || (Array.isArray(qData.correctAnswer) && qData.correctAnswer.length > 1);
+        }
+
+        function renderStudentQuestion(state) {
+            const storyKey = state.activeStory || 'story1';
+            const qIdx = (state.currentQuestion || 1) - 1;
+            const qData = state.currentQuestionData || (window.CASINO_QUIZ_DATA && window.CASINO_QUIZ_DATA[storyKey] && window.CASINO_QUIZ_DATA[storyKey].questions[qIdx]);
+
+            // Story Badge
+            const storyBadge = document.getElementById('student-story-badge');
+            if (storyBadge) {
+                storyBadge.innerText = storyKey === 'story2' ? '🌊 THE BLACK SEA' : '🐒 LUTUNG KASARUNG';
+            }
+
+            if (!qData) return;
+
+            // Type Badge & Notice
+            const isComplex = isCurrentQuestionComplex(state);
+            const typeBadge = document.getElementById('student-q-type-badge');
+            if (typeBadge) {
+                typeBadge.innerText = `Q${state.currentQuestion}: ${isComplex ? 'Complex Multiple Choice' : 'Single Choice'}`;
+                typeBadge.className = isComplex ? 'badge-pill cyan' : 'badge-pill purple';
+            }
+
+            const mcmaNotice = document.getElementById('student-mcma-notice');
+            if (mcmaNotice) {
+                mcmaNotice.style.display = isComplex ? 'inline-flex' : 'none';
+            }
+
+            // Question Text
+            const qText = document.getElementById('student-question-text');
+            if (qText) {
+                qText.innerText = qData.question || qData.text || '';
+            }
+
+            // Normalize Options to array
+            let optArray = [];
+            if (Array.isArray(qData.options)) {
+                optArray = qData.options;
+            } else if (typeof qData.options === 'object' && qData.options !== null) {
+                optArray = Object.entries(qData.options).map(([k, v]) => ({ key: k, text: v }));
+            }
+
+            const validKeys = qData.correctAnswer || qData.validKeys || [qData.answerKey || 'A'];
+
+            // Options List
+            const optContainer = document.getElementById('student-options-container');
+            if (optContainer && optArray.length > 0) {
+                optContainer.innerHTML = '';
+                const isRevealed = state.gameStatus === 'REVEALED' || state.gameStatus === 'CALCULATED';
+                const correctKey = state.correctAnswer;
+
+                optArray.forEach(opt => {
+                    const isSelected = Array.isArray(selectedAns) ? selectedAns.includes(opt.key) : (selectedAns === opt.key);
+                    const isCorrect = isRevealed && (
+                        (Array.isArray(correctKey) && correctKey.includes(opt.key)) ||
+                        (typeof correctKey === 'string' && correctKey.split(/[\s,]+/).includes(opt.key)) ||
+                        (validKeys && validKeys.includes(opt.key))
+                    );
+
+                    const row = document.createElement('div');
+                    row.className = `student-opt-row ${isSelected ? 'selected' : ''} ${isCorrect ? 'correct-revealed' : ''}`;
+                    row.onclick = () => selectAnswer(opt.key);
+                    
+                    const badgeContent = isComplex 
+                        ? (isSelected ? '✓' : opt.key)
+                        : opt.key;
+
+                    row.innerHTML = `
+                        <div class="student-opt-badge ${isComplex ? 'checkbox-style' : ''}">${badgeContent}</div>
+                        <div class="student-opt-text"><strong>${opt.key}.</strong> ${opt.text}</div>
+                        ${isCorrect ? '<span style="color: #10b981; font-weight: 900; font-size: 0.8rem; margin-left: auto;">✓</span>' : ''}
+                    `;
+                    optContainer.appendChild(row);
+                });
+            }
+        }
+
+        function renderStudentState(state) {
+            if (!state) return;
+
+            // Track Question/Round Change & Reset local selection if new question started
+            const trackingKey = `${state.activeStory || 'story1'}_${state.currentQuestion}`;
+            if (currentQuestionTrackingKey && currentQuestionTrackingKey !== trackingKey) {
+                // New question round
+                selectedBet = null;
+                selectedAns = [];
+                isConfirmed = false;
+                document.getElementById('summary-bet-val').innerText = '—';
+                document.getElementById('summary-ans-val').innerText = '—';
+                document.querySelectorAll('.casino-chip').forEach(c => c.classList.remove('selected'));
+                document.querySelectorAll('.answer-card').forEach(b => b.classList.remove('selected'));
+            }
+            currentQuestionTrackingKey = trackingKey;
+
+            // Update group names on selection buttons
+            if (state.groups) {
+                Object.entries(state.groups).forEach(([gId, g]) => {
+                    const el = document.getElementById(`label-${gId}`);
+                    if (el) el.innerText = g.name;
+                });
+            }
+
+            if (!myGroupId || !state.groups[myGroupId]) return;
+
+            const myGroup = state.groups[myGroupId];
+            const capital = myGroup.capital;
+
+            // Header labels
+            document.getElementById('student-header-group').innerText = myGroup.name.toUpperCase();
+            document.getElementById('dash-group-name').innerText = myGroup.name;
+            document.getElementById('header-question-badge').innerText = `Q${state.currentQuestion} / ${state.totalQuestions || 10}`;
+            document.getElementById('dash-capital-display').innerText = capital;
+
+            // Render Live Synchronized Question & Options
+            renderStudentQuestion(state);
+
+            // Bet chips availability logic (Priority 6)
+            renderBetChips(capital, state.finalQuestion);
+
+            // Real-time status update & lock state (Priority 9)
+            updateStatusAndLocks(state, myGroup);
+
+            // Handle round score reveal animation (Priority 16)
+            if (state.gameStatus === 'CALCULATED' && myGroup.lastResult && !myGroup.hasSeenModal) {
+                showResultModal(myGroup, capital);
+            }
+        }
+
+        function renderBetChips(capital, isFinalQuestion) {
+            const chip25 = document.getElementById('chip-btn-25');
+            const chip50 = document.getElementById('chip-btn-50');
+            const chip75 = document.getElementById('chip-btn-75');
+            const chip100 = document.getElementById('chip-btn-100');
+            const chipAllIn = document.getElementById('chip-btn-allin');
+
+            // Disable chips exceeding capital
+            chip25.classList.toggle('disabled', capital < 25);
+            chip50.classList.toggle('disabled', capital < 50);
+            chip75.classList.toggle('disabled', capital < 75);
+            chip100.classList.toggle('disabled', capital < 100);
+
+            // Low capital (< 25) handling
+            if (capital < 25 && capital > 0) {
+                chipAllIn.style.display = 'flex';
+                document.getElementById('chip-allin-val').innerText = capital;
+            } else if (isFinalQuestion) {
+                // Final Question ALL IN Mode
+                chipAllIn.style.display = 'flex';
+                document.getElementById('chip-allin-val').innerText = 'ALL';
+            } else {
+                chipAllIn.style.display = 'none';
+            }
+        }
+
+        function updateStatusAndLocks(state, myGroup) {
+            const statusBox = document.getElementById('student-status-box');
+            const statusText = document.getElementById('student-status-text');
+            const lockNotice = document.getElementById('locked-submission-notice');
+            const confirmBtn = document.getElementById('btn-confirm-choice');
+
+            const status = state.gameStatus;
+            const groupStatus = myGroup.status;
+
+            if (groupStatus === 'SUBMITTED') {
+                isConfirmed = true;
+                lockNotice.style.display = 'flex';
+                confirmBtn.disabled = true;
+                confirmBtn.innerText = '🔒 ANSWER LOCKED';
+                statusText.innerText = 'ANSWER SUBMITTED 🔒';
+                statusBox.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+            } else if (status === 'BETTING_OPEN') {
+                isConfirmed = false;
+                lockNotice.style.display = 'none';
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = '🔒 CONFIRM YOUR CHOICE';
+                statusText.innerText = 'PLACE YOUR BET 💰';
+                statusBox.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+            } else if (status === 'ANSWERING_OPEN') {
+                statusText.innerText = 'CHOOSE YOUR ANSWER 📝';
+                statusBox.style.borderColor = 'rgba(6, 182, 212, 0.4)';
+            } else if (status === 'LOCKED') {
+                isConfirmed = true;
+                confirmBtn.disabled = true;
+                confirmBtn.innerText = '🔒 ANSWERS LOCKED BY TEACHER';
+                statusText.innerText = 'WAITING FOR RESULT ⏳';
+                statusBox.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+            } else if (status === 'REVEALED' || status === 'CALCULATED') {
+                statusText.innerText = 'RESULT REVEALED 🎉';
+                statusBox.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+            } else {
+                statusText.innerText = 'WAITING FOR TEACHER ⏳';
+                statusBox.style.borderColor = 'var(--border-glass)';
+            }
+
+            // Sync selections if already in server
+            if (myGroup.bet !== null && selectedBet === null) {
+                selectedBet = myGroup.bet;
+                highlightSelectedChip(myGroup.bet);
+                document.getElementById('summary-bet-val').innerText = `${myGroup.bet} PTS`;
+            }
+            if (myGroup.answer && selectedAns.length === 0) {
+                selectedAns = typeof myGroup.answer === 'string'
+                    ? myGroup.answer.split(/[\s,]+/).filter(Boolean)
+                    : (Array.isArray(myGroup.answer) ? myGroup.answer : [myGroup.answer]);
+                highlightSelectedAns();
+                document.getElementById('summary-ans-val').innerText = selectedAns.join(', ');
+            }
+        }
+
+        function selectBet(amount) {
+            if (isConfirmed) return;
+            const myGroup = currentGameState ? currentGameState.groups[myGroupId] : null;
+            if (myGroup && amount > myGroup.capital) return;
+
+            casinoAudio.play('chip');
+            selectedBet = amount;
+            highlightSelectedChip(amount);
+            document.getElementById('summary-bet-val').innerText = `${amount} PTS`;
+        }
+
+        function selectAllInBet() {
+            if (isConfirmed) return;
+            const myGroup = currentGameState ? currentGameState.groups[myGroupId] : null;
+            if (!myGroup) return;
+
+            casinoAudio.play('chip');
+            selectedBet = myGroup.capital;
+            document.querySelectorAll('.casino-chip').forEach(c => c.classList.remove('selected'));
+            document.getElementById('chip-btn-allin').classList.add('selected');
+            document.getElementById('summary-bet-val').innerText = `${myGroup.capital} PTS (ALL IN)`;
+        }
+
+        function highlightSelectedChip(amount) {
+            document.querySelectorAll('.casino-chip').forEach(c => c.classList.remove('selected'));
+            const chip = document.getElementById(`chip-btn-${amount}`);
+            if (chip) chip.classList.add('selected');
+        }
+
+        function selectAnswer(key) {
+            if (isConfirmed) return;
+            casinoAudio.play('click');
+
+            const isComplex = isCurrentQuestionComplex(currentGameState);
+
+            if (isComplex) {
+                // MCMA: Toggle selection (can choose multiple!)
+                if (!Array.isArray(selectedAns)) selectedAns = [];
+                const idx = selectedAns.indexOf(key);
+                if (idx > -1) {
+                    selectedAns.splice(idx, 1);
+                } else {
+                    selectedAns.push(key);
+                    selectedAns.sort();
+                }
+            } else {
+                // Single Choice: Replace
+                selectedAns = [key];
+            }
+
+            highlightSelectedAns();
+            document.getElementById('summary-ans-val').innerText = selectedAns.length > 0 ? selectedAns.join(', ') : '—';
+            if (currentGameState) renderStudentQuestion(currentGameState);
+        }
+
+        function highlightSelectedAns() {
+            document.querySelectorAll('.answer-card').forEach(b => {
+                const key = b.innerText.trim();
+                const isSel = Array.isArray(selectedAns) ? selectedAns.includes(key) : (selectedAns === key);
+                b.classList.toggle('selected', isSel);
+            });
+        }
+
+        function confirmSubmission() {
+            if (isConfirmed) return;
+            if (!selectedBet) {
+                alert('Please select your Bet first!');
+                return;
+            }
+            if (!selectedAns || selectedAns.length === 0) {
+                alert('Please choose at least one Answer option (A, B, C, D, or E)!');
+                return;
+            }
+
+            casinoAudio.play('confirm');
+            isConfirmed = true;
+            const finalAnswer = selectedAns.sort().join(',');
+            casinoSync.submitChoice(myGroupId, selectedBet, finalAnswer);
+
+            document.getElementById('locked-submission-notice').style.display = 'flex';
+            document.getElementById('btn-confirm-choice').disabled = true;
+            document.getElementById('btn-confirm-choice').innerText = '🔒 ANSWER LOCKED';
+        }
+
+        function showResultModal(myGroup, currentCap) {
+            const isCorrect = myGroup.lastResult === 'CORRECT';
+            const icon = isCorrect ? '🎉' : '❌';
+            const title = isCorrect ? 'CORRECT! 🎉' : 'WRONG';
+            const deltaClass = isCorrect ? 'badge-pill emerald' : 'badge-pill crimson';
+            const deltaSign = isCorrect ? '+' : '';
+
+            document.getElementById('res-icon-hero').innerText = icon;
+            document.getElementById('res-title-text').innerText = title;
+            document.getElementById('res-title-text').style.color = isCorrect ? 'var(--emerald)' : 'var(--crimson)';
+            
+            const badge = document.getElementById('res-delta-badge');
+            badge.className = deltaClass;
+            badge.innerText = `${deltaSign}${myGroup.lastDelta} POINTS`;
+
+            const prev = currentCap - myGroup.lastDelta;
+            document.getElementById('res-prev-capital').innerText = `${prev} pts`;
+            document.getElementById('res-new-capital').innerText = `${currentCap} pts`;
+
+            if (isCorrect) {
+                casinoAudio.play('correct');
+            } else {
+                casinoAudio.play('wrong');
+            }
+
+            document.getElementById('student-result-modal').classList.add('active');
+            myGroup.hasSeenModal = true;
+        }
+
+        function closeResultModal() {
+            document.getElementById('student-result-modal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
